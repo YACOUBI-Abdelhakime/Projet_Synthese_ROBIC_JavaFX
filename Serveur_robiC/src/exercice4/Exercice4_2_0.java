@@ -23,8 +23,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -42,8 +47,11 @@ import tools.Tools;
 public class Exercice4_2_0 {
 	// Une seule variable d'instance
 	Environment environment = new Environment();
-	//GSpace space = new GSpace("Exercice 4", new Dimension(200, 100));
-
+	int port = 8000;
+	Socket socket;
+	ServerSocket serverSocket ;
+	int nbC = 0;
+	
 	public Exercice4_2_0() {
 		GSpace space = new GSpace("Exercice 4", new Dimension(200, 100));
 		space.open();
@@ -76,10 +84,29 @@ public class Exercice4_2_0 {
 	
 	private void mainLoop() {
 		while (true) {
-			// prompt
-			System.out.print("> ");
+			try {
+				serverSocket = new ServerSocket(port);
+				
+				while(true) {
+					nbC++;
+					System.out.println("Attente d'un client <"+nbC+"> dans le port "+port);
+					socket = serverSocket.accept();
+					System.out.println("Client <"+nbC+"> Accepter ");
+					
+					Traitement traitement = new Traitement(socket,nbC);
+					traitement.start();
+					
+				}
+				
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			
+			//ON vas l'utiliser après
 			// lecture d'une serie de s-expressions au clavier (return = fin de la serie)
-			String input = Tools.readKeyboard();
+			/*String input = Tools.readKeyboard(); 
 			// creation du parser
 			SParser<SNode> parser = new SParser<>();
 			// compilation
@@ -94,9 +121,53 @@ public class Exercice4_2_0 {
 			Iterator<SNode> itor = compiled.iterator();
 			while (itor.hasNext()) {
 				new Interpreter().compute(environment, itor.next());
-			}
+			}*/
 		}
 	}
+	
+	public class Traitement extends Thread{
+		private Socket socket = null;
+		private int id;
+		private BufferedReader br = null;
+		private PrintStream ps = null;
+		
+
+		Traitement(Socket s,int x){
+			try {
+				this.socket = s;	
+				this.id = x;
+	    		br = new BufferedReader(new InputStreamReader(socket.getInputStream()));			
+				ps = new PrintStream(socket.getOutputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	
+	    }
+
+		public void run() {	
+			// lecture d'une serie de s-expressions au clavier (return = fin de la serie)
+			String input;
+			try {
+				input = br.readLine();
+				System.out.println("Client["+nbC+"]>> commande : "+input);
+				// creation du parser
+				SParser<SNode> parser = new SParser<>();
+				// compilation
+				List<SNode> compiled = null;
+				compiled = parser.parse(input);
+				// execution des s-expressions compilees
+				Iterator<SNode> itor = compiled.iterator();
+			 
+				while (itor.hasNext()) {
+					new Interpreter().compute(environment, itor.next());
+				}
+				ps.println("0 Script bien executée");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}// FIN CLASS Traitement **************************************************
 
 	public interface Command {
 		// le receiver est l'objet qui va executer method
