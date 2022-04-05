@@ -140,31 +140,47 @@ public class Exercice4_2_0 {
 				ps = new PrintStream(socket.getOutputStream());
 			} catch (IOException e) {
 				e.printStackTrace();
-			}	
+			}
 	    }
 
 		public void run() {	
-			// lecture d'une serie de s-expressions au clavier (return = fin de la serie)
-			String input;
-			try {
-				input = br.readLine();
-				System.out.println("Client["+nbC+"]>> commande : "+input);
-				// creation du parser
-				SParser<SNode> parser = new SParser<>();
-				// compilation
-				List<SNode> compiled = null;
-				compiled = parser.parse(input);
-				// execution des s-expressions compilees
-				Iterator<SNode> itor = compiled.iterator();
-			 
-				while (itor.hasNext()) {
-					new Interpreter().compute(environment, itor.next());
+			String cmd;
+			while(true){
+				try {
+					cmd = br.readLine();
+					System.out.println("Client["+nbC+"]>> commande : "+cmd);
+					
+					if(cmd.equals("bye")) {
+						break;
+					}
+					
+					// creation du parser
+					SParser<SNode> parser = new SParser<>();
+					// compilation
+					List<SNode> compiled = null;
+					compiled = parser.parse(cmd);
+					// execution des s-expressions compilees
+					Iterator<SNode> itor = compiled.iterator();
+				 
+					while (itor.hasNext()) {
+						new Interpreter().compute(environment, itor.next());
+					}
+					ps.println("0 Script bien executée");
+				} catch (IOException e) {
+
+					e.printStackTrace();
 				}
-				ps.println("0 Script bien executée");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+			
+			try {
+				socket.close();
+				br.close();
+				ps.close();
+			} catch (IOException e) {
+			}
+			
+			
+			
 		}
 		
 	}// FIN CLASS Traitement **************************************************

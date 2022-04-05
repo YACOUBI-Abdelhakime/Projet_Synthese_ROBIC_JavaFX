@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -90,7 +91,20 @@ public class Control {
 	// Event Listener on Button[#b1].onAction
 	@FXML
 	public void b1_exec(ActionEvent event) {
+		String cmd = textArea1.getText().trim();
 		System.out.println("b1_exec");
-    	System.out.println("textArea1 = "+textArea1.getText());
+    	System.out.println("textArea1 = "+cmd);
+    	
+    	ps.println(cmd);
+    	
+    	if(cmd.equals("bye")) {
+    		try {
+				socket.close();
+				ps.close();
+		    	br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
 	}
 }

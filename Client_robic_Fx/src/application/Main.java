@@ -18,7 +18,7 @@ public class Main extends Application {
 	        Parent root = loader.load();
 		
 	        //primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("img/EdenCodingIcon.png")));
-	        primaryStage.setTitle("Projet L3");
+	        primaryStage.setTitle("Client Robic");
 	        primaryStage.setScene(new Scene(root));
 	        primaryStage.show();
         
