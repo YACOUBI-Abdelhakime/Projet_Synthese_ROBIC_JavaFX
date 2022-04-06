@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -83,7 +84,7 @@ public class Exercice4_2_0 {
 	}
 	
 	private void mainLoop() {
-		while (true) {
+		//while (true) {
 			try {
 				serverSocket = new ServerSocket(port);
 				
@@ -122,7 +123,7 @@ public class Exercice4_2_0 {
 			while (itor.hasNext()) {
 				new Interpreter().compute(environment, itor.next());
 			}*/
-		}
+		//}
 	}
 	
 	public class Traitement extends Thread{
@@ -143,7 +144,7 @@ public class Exercice4_2_0 {
 			}
 	    }
 
-		public void run() {	
+		public void run() {
 			String json,cmd;
 			Message msg;
 			while(true){
@@ -153,7 +154,7 @@ public class Exercice4_2_0 {
 					
 					if(msg.getType().equals("script")) {
 						cmd = msg.getMess();
-						System.out.println("Client["+nbC+"]>> commande : "+cmd);
+						System.out.println("Client["+id+"]>> commande : "+cmd);
 						
 						if(cmd.equals("bye")) {
 							break;
@@ -166,17 +167,23 @@ public class Exercice4_2_0 {
 						compiled = parser.parse(cmd);
 						// execution des s-expressions compilees
 						Iterator<SNode> itor = compiled.iterator();
-					 
+						
+						int i = 0;
 						while (itor.hasNext()) {
-							new Interpreter().compute(environment, itor.next());
+							SNode snode = itor.next();
+							System.out.println("SNode ===> "+snode.toString());
+							new Interpreter().compute(environment,snode );
+							i++;
+							ps.println("1 Script <"+i+"> bien executé");
 						}
-						ps.println("0 Script bien executée");
+						ps.println("0 Execution des script est fini");
 					
 					}else {
 						System.out.println("C est pas un script !!");
 					}
+				} catch (SocketException e) {
+					break;
 				} catch (IOException e) {
-
 					e.printStackTrace();
 				}
 			}
@@ -185,6 +192,7 @@ public class Exercice4_2_0 {
 				socket.close();
 				br.close();
 				ps.close();
+				System.out.println("Client["+id+"]>> Quitté.");
 			} catch (IOException e) {
 			}
 			

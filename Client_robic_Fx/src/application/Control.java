@@ -47,6 +47,7 @@ public class Control {
 	Socket socket;
     private static BufferedReader br;
     private static PrintStream ps;
+    String textTrace="";
 
 	// Event Listener on MenuItem.onAction
 	@FXML
@@ -96,33 +97,16 @@ public class Control {
 	// Event Listener on Button[#b1].onAction
 	@FXML
 	public void b1_exec(ActionEvent event) {
-		
 		String cmd = textArea1.getText().trim();
 		Message msg = new Message("script",cmd);
     	System.out.println("Message = "+msg);
     	
     	String json = "";
+    	textTrace="";
 
-    	json = JSON.Java2Json(msg);
-    	/*String res = null;
-		try {
-			StringWriter writer = new StringWriter();
-			JsonGenerator generator = new JsonFactory().createGenerator(writer);
-			generator.setCodec(new ObjectMapper());
-			generator.writeObject(msg); 
-			generator.close();
-			res = writer.toString();
-
-		}
-		catch (Exception e) {
-			System.out.println("Erreur JSON.Java2Json : "+e.getMessage());
-		}*/
-    	
-    	
-    	
+    	json = JSON.Java2Json(msg); 
     	
     	ps.println(json);
-    	
     	
     	if(cmd.equals("bye")) {
     		try {
@@ -133,5 +117,29 @@ public class Control {
 				e.printStackTrace();
 			}
     	}
+    	
+    	readFromServer();
+	}
+	
+	public void readFromServer() {
+		int state;
+		String tmpRes,tmpAllRes="";
+		try {
+			do{
+				tmpRes = br.readLine();//System.out.println("+>> "+tmpRes);
+		        state = Integer.valueOf(tmpRes.substring(0, tmpRes.indexOf(" ")));
+		        tmpRes = ">> "+tmpRes.substring(2).trim()+"\n";
+		        tmpAllRes += tmpRes.equals(">> \n") ? "" : tmpRes;
+		        
+			}while (state == 1); 
+
+			textTrace += tmpAllRes;
+			textArea2.setText(textTrace);
+			
+		} catch (IOException e) {
+			//server error
+			textTrace += ">> Serveur est deconncté !!";
+			textArea2.setText(textTrace);
+		}
 	}
 }
