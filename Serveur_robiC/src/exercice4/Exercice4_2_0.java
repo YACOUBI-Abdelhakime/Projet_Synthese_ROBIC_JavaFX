@@ -52,6 +52,8 @@ public class Exercice4_2_0 {
 	Socket socket;
 	ServerSocket serverSocket ;
 	int nbC = 0;
+	int indexScript =0;
+	boolean parLine = false;
 	
 	public Exercice4_2_0() {
 		GSpace space = new GSpace("Exercice 4", new Dimension(200, 100));
@@ -165,23 +167,36 @@ public class Exercice4_2_0 {
 						// execution des s-expressions compilees
 						Iterator<SNode> itor = compiled.iterator();
 						
-						int i =0;
+						
 						while (itor.hasNext()) {
 							SNode snode = itor.next();
 							//System.out.println("SNode ===> "+snode.toString());
 							new Interpreter().compute(environment,snode );
-							i++;
-							ps.println("1 Script <"+i+"> bien executé");
+							indexScript++;
+							if(parLine) {
+								ps.println("0 Script <"+indexScript+"> bien executé");
+							}else {
+								ps.println("1 Script <"+indexScript+"> bien executé");
+							}
+							
 						}
-						ps.println("0 ");
+						if(!parLine) {
+							ps.println("0 ");
+						}
 					
 					}else if(msg.getType().equals("cmd")){
 						
 						if(msg.getMess().equals("bye")) {
 							break;
+						}else if(msg.getMess().equals("debut par lignes")) {
+							indexScript = 0;
+							parLine = true;
+						}else if(msg.getMess().equals("fin par lignes")) {
+							indexScript = 0;
+							parLine = false;
 						}
 					}else {
-						System.out.println("C est pas un script !!");
+						System.out.println("C\'est pas ni un script ni cmd !!");
 					}
 				} catch (SocketException e) {
 					break;

@@ -63,6 +63,8 @@
   				<children>
    					<Button fx:id="b1" layoutX="14.0" layoutY="14.0" onAction="#b1_exec" text="Exécuter programme ROBI" />
                <Button fx:id="btnArreter" layoutX="201.0" layoutY="14.0" mnemonicParsing="false" onAction="#arreterExec" text="Arrêter l'exécution" />
+               <Button fx:id="btnExecL" layoutX="344.0" layoutY="14.0" mnemonicParsing="false" onAction="#execLine" text="Exécuter line 1" />
+               <Button fx:id="btnRetour1" layoutX="453.0" layoutY="14.0" mnemonicParsing="false" onAction="#retourLine1" text="Retour à la line 1" />
    				</children>
 			</AnchorPane>
          <columnConstraints>

@@ -40,7 +40,7 @@ public class Control {
 	@FXML
 	private Button b1;
 	@FXML
-	private Button btnArreter;
+	private Button btnArreter,btnExecL, btnRetour1;
 
 
 	Socket socket;
@@ -48,6 +48,8 @@ public class Control {
     private static PrintStream ps;
     String textTrace="";
     boolean envoyerAutre ;
+    int indexLine = 0;
+    String scripts[];
     
 	
 	// Event Listener on Button[#btnDeconnecter].onAction
@@ -174,6 +176,44 @@ public class Control {
 		
 		 */
 	}
+	// Event Listener on Button[#btnArreter].onAction
+	@FXML
+	public void execLine(ActionEvent event) {
+		if(indexLine == 0) {
+			scripts = textArea1.getText().trim().split("\n");
+			textTrace="";
+			ps.println(JSON.Java2Json(new Message("cmd","debut par lignes")));
+		}
+		
+		if( indexLine < scripts.length ) {
+			String cmd = scripts[indexLine++];	    	
+			
+			Message msg = new Message("script",cmd);
+	    	
+	    	String json = JSON.Java2Json(msg); 
+	    	
+	    	ps.println(json);
+	    	
+	    	readFromServer();
+	    	btnExecL.setText("Exécuter line "+(indexLine+1));
+	    	
+	    	if(scripts.length == indexLine ) {
+	    		ps.println(JSON.Java2Json(new Message("cmd","fin par lignes")));
+	    		btnExecL.setText("Scripts fini");
+				btnExecL.setDisable(true);
+	    	}
+		}
+	}
+	
+	// Event Listener on Button[#btnArreter].onAction
+	@FXML
+	public void retourLine1(ActionEvent event) {
+		indexLine = 0;
+		scripts = textArea1.getText().trim().split("\n");
+		textTrace="";
+		btnExecL.setDisable(false);
+		
+	}
 	
 	public void readFromServer() {
 		int state;
@@ -184,6 +224,7 @@ public class Control {
 		        state = Integer.valueOf(tmpRes.substring(0, tmpRes.indexOf(" ")));
 		        tmpRes = ">> "+tmpRes.substring(2).trim()+"\n";
 		        tmpAllRes += tmpRes.equals(">> \n") ? "" : tmpRes;
+		        System.out.println("RESS ==> "+tmpRes);
 		        
 			}while (state == 1); 
 
