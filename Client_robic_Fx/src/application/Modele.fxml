@@ -34,13 +34,15 @@
                   <Rectangle fill="#ffffff00" height="24.0" layoutX="65.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="29.0" />
                   <Label text="Hostname" />
                   <Rectangle fill="#ffffff00" height="24.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="19.0" />
-                  <TextField fx:id="hostnameV" prefHeight="25.0" prefWidth="158.0" text="localhost" />
-                  <Rectangle fill="#ffffff00" height="24.0" layoutX="293.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="48.0" />
+                  <TextField fx:id="hostnameV" prefHeight="25.0" prefWidth="129.0" text="localhost" />
+                  <Rectangle fill="#ffffff00" height="24.0" layoutX="293.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="27.0" />
                   <Label layoutX="10.0" layoutY="10.0" text="Port" />
                   <Rectangle fill="#ffffff00" height="24.0" layoutX="65.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="19.0" />
-                  <TextField fx:id="portV" layoutX="84.0" layoutY="10.0" prefHeight="25.0" prefWidth="158.0" text="8000" />
-                  <Rectangle fill="#ffffff00" height="24.0" layoutX="264.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="46.0" />
+                  <TextField fx:id="portV" layoutX="84.0" layoutY="10.0" prefHeight="25.0" prefWidth="130.0" text="8000" />
+                  <Rectangle fill="#ffffff00" height="24.0" layoutX="264.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="24.0" />
                   <Button fx:id="btnConnextion" mnemonicParsing="false" onAction="#connexion" text="Connexion" />
+                  <Rectangle fill="#ffffff00" height="24.0" layoutX="467.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="13.0" />
+                  <Button fx:id="btnDeconnecter" mnemonicParsing="false" onAction="#deconnecter" text="Déconnecter" />
                </children>
             </HBox>
          </children>
@@ -60,6 +62,7 @@
 	        <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="2">
   				<children>
    					<Button fx:id="b1" layoutX="14.0" layoutY="14.0" onAction="#b1_exec" text="Exécuter programme ROBI" />
+               <Button fx:id="btnArreter" layoutX="201.0" layoutY="14.0" mnemonicParsing="false" onAction="#arreterExec" text="Arrêter l'exécution" />
    				</children>
 			</AnchorPane>
          <columnConstraints>

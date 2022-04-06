@@ -148,6 +148,7 @@ public class Exercice4_2_0 {
 			String json,cmd;
 			Message msg;
 			while(true){
+				
 				try {
 					json = br.readLine();
 					msg = (Message)JSON.Json2Java(json, Message.class);
@@ -155,10 +156,6 @@ public class Exercice4_2_0 {
 					if(msg.getType().equals("script")) {
 						cmd = msg.getMess();
 						System.out.println("Client["+id+"]>> commande : "+cmd);
-						
-						if(cmd.equals("bye")) {
-							break;
-						}
 						
 						// creation du parser
 						SParser<SNode> parser = new SParser<>();
@@ -168,16 +165,21 @@ public class Exercice4_2_0 {
 						// execution des s-expressions compilees
 						Iterator<SNode> itor = compiled.iterator();
 						
-						int i = 0;
+						int i =0;
 						while (itor.hasNext()) {
 							SNode snode = itor.next();
-							System.out.println("SNode ===> "+snode.toString());
+							//System.out.println("SNode ===> "+snode.toString());
 							new Interpreter().compute(environment,snode );
 							i++;
 							ps.println("1 Script <"+i+"> bien executé");
 						}
-						ps.println("0 Execution des script est fini");
+						ps.println("0 ");
 					
+					}else if(msg.getType().equals("cmd")){
+						
+						if(msg.getMess().equals("bye")) {
+							break;
+						}
 					}else {
 						System.out.println("C est pas un script !!");
 					}
