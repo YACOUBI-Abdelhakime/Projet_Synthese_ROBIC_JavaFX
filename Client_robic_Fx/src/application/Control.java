@@ -11,7 +11,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.StringWriter;
 import java.net.Socket;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javafx.event.ActionEvent;
 
@@ -91,11 +96,33 @@ public class Control {
 	// Event Listener on Button[#b1].onAction
 	@FXML
 	public void b1_exec(ActionEvent event) {
+		
 		String cmd = textArea1.getText().trim();
-		System.out.println("b1_exec");
-    	System.out.println("textArea1 = "+cmd);
+		Message msg = new Message("script",cmd);
+    	System.out.println("Message = "+msg);
     	
-    	ps.println(cmd);
+    	String json = "";
+
+    	json = JSON.Java2Json(msg);
+    	/*String res = null;
+		try {
+			StringWriter writer = new StringWriter();
+			JsonGenerator generator = new JsonFactory().createGenerator(writer);
+			generator.setCodec(new ObjectMapper());
+			generator.writeObject(msg); 
+			generator.close();
+			res = writer.toString();
+
+		}
+		catch (Exception e) {
+			System.out.println("Erreur JSON.Java2Json : "+e.getMessage());
+		}*/
+    	
+    	
+    	
+    	
+    	ps.println(json);
+    	
     	
     	if(cmd.equals("bye")) {
     		try {

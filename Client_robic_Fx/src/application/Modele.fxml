@@ -34,11 +34,11 @@
                   <Rectangle fill="#ffffff00" height="24.0" layoutX="65.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="29.0" />
                   <Label text="Hostname" />
                   <Rectangle fill="#ffffff00" height="24.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="19.0" />
-                  <TextField fx:id="hostnameV" prefHeight="25.0" prefWidth="158.0" />
+                  <TextField fx:id="hostnameV" prefHeight="25.0" prefWidth="158.0" text="localhost" />
                   <Rectangle fill="#ffffff00" height="24.0" layoutX="293.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="48.0" />
                   <Label layoutX="10.0" layoutY="10.0" text="Port" />
                   <Rectangle fill="#ffffff00" height="24.0" layoutX="65.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="19.0" />
-                  <TextField fx:id="portV" layoutX="84.0" layoutY="10.0" prefHeight="25.0" prefWidth="158.0" />
+                  <TextField fx:id="portV" layoutX="84.0" layoutY="10.0" prefHeight="25.0" prefWidth="158.0" text="8000" />
                   <Rectangle fill="#ffffff00" height="24.0" layoutX="264.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="46.0" />
                   <Button fx:id="btnConnextion" mnemonicParsing="false" onAction="#connexion" text="Connexion" />
                </children>

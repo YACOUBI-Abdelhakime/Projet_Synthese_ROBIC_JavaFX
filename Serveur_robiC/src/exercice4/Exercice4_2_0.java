@@ -144,28 +144,37 @@ public class Exercice4_2_0 {
 	    }
 
 		public void run() {	
-			String cmd;
+			String json,cmd;
+			Message msg;
 			while(true){
 				try {
-					cmd = br.readLine();
-					System.out.println("Client["+nbC+"]>> commande : "+cmd);
+					json = br.readLine();
+					msg = (Message)JSON.Json2Java(json, Message.class);
 					
-					if(cmd.equals("bye")) {
-						break;
-					}
+					if(msg.getType().equals("script")) {
+						cmd = msg.getMess();
+						System.out.println("Client["+nbC+"]>> commande : "+cmd);
+						
+						if(cmd.equals("bye")) {
+							break;
+						}
+						
+						// creation du parser
+						SParser<SNode> parser = new SParser<>();
+						// compilation
+						List<SNode> compiled = null;
+						compiled = parser.parse(cmd);
+						// execution des s-expressions compilees
+						Iterator<SNode> itor = compiled.iterator();
+					 
+						while (itor.hasNext()) {
+							new Interpreter().compute(environment, itor.next());
+						}
+						ps.println("0 Script bien executée");
 					
-					// creation du parser
-					SParser<SNode> parser = new SParser<>();
-					// compilation
-					List<SNode> compiled = null;
-					compiled = parser.parse(cmd);
-					// execution des s-expressions compilees
-					Iterator<SNode> itor = compiled.iterator();
-				 
-					while (itor.hasNext()) {
-						new Interpreter().compute(environment, itor.next());
+					}else {
+						System.out.println("C est pas un script !!");
 					}
-					ps.println("0 Script bien executée");
 				} catch (IOException e) {
 
 					e.printStackTrace();
