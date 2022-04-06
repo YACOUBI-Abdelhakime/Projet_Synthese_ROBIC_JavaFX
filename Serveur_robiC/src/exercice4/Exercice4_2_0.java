@@ -182,6 +182,7 @@ public class Exercice4_2_0 {
 						}
 						if(!parLine) {
 							ps.println("0 ");
+							indexScript = 0;
 						}
 					
 					}else if(msg.getType().equals("cmd")){

@@ -186,8 +186,15 @@ public class Control {
 		}
 		
 		if( indexLine < scripts.length ) {
-			String cmd = scripts[indexLine++];	    	
+			String cmd = scripts[indexLine];
+			scripts[indexLine] = "=> "+scripts[indexLine];
+			if(indexLine-1 >=0) {
+				scripts[indexLine-1] = scripts[indexLine-1].substring(3);
+			}
 			
+			updateTestScripts(scripts);
+			
+			indexLine++;
 			Message msg = new Message("script",cmd);
 	    	
 	    	String json = JSON.Java2Json(msg); 
@@ -208,10 +215,26 @@ public class Control {
 	// Event Listener on Button[#btnArreter].onAction
 	@FXML
 	public void retourLine1(ActionEvent event) {
+		btnExecL.setText("Exécuter line 1");
+		scripts[indexLine-1] = scripts[indexLine-1].substring(3);
+		updateTestScripts(scripts);
+		System.out.println("INDEXLINE = "+(indexLine-1));
 		indexLine = 0;
 		scripts = textArea1.getText().trim().split("\n");
 		textTrace="";
+		textArea2.setText(textTrace);
 		btnExecL.setDisable(false);
+		
+		
+	}
+	
+	public void updateTestScripts(String scripts[]) {
+		String tmpAllRes = "";
+		for(String line : scripts) {
+			tmpAllRes += line+"\n";			
+		}
+		System.out.println("tmpAllRes ==> \n"+tmpAllRes);
+		textArea1.setText(tmpAllRes);
 		
 	}
 	
