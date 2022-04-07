@@ -65,6 +65,7 @@ public class Control {
 	    	br.close();
 	    	body.setDisable(true);
 	    	serverClosed = true; 
+	    	btnConnextion.setDisable(false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -72,7 +73,7 @@ public class Control {
 	// Event Listener on Button[#btnArreter].onAction
 	@FXML
 	public void arreterExec(ActionEvent event) {
-		System.out.println("+++++++fonction arreter() ");
+		//System.out.println("+++++++fonction arreter() ");
 		ps.println(JSON.Java2Json(new Message("cmd","Arreter")));
 	}
 
@@ -184,6 +185,7 @@ public class Control {
 	    	threadRes.start();
 	    	serverClosed = false; 
 	    	btnDeconnecter.setDisable(false);
+	    	btnConnextion.setDisable(true);
 	    	
     	}  catch (Exception e) {
     		//e.printStackTrace();
@@ -296,6 +298,7 @@ public class Control {
 		
 	}
 	
+	//unused 
 	public void readFromServer() {
 		int state;
 		String tmpRes,tmpAllRes="";
