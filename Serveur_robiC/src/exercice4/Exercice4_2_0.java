@@ -168,31 +168,46 @@ public class Exercice4_2_0 {
 						Iterator<SNode> itor = compiled.iterator();
 						
 						
-						while (itor.hasNext()) {
+						while (itor.hasNext() ) {
 							SNode snode = itor.next();
 							//System.out.println("SNode ===> "+snode.toString());
 							new Interpreter().compute(environment,snode );
 							indexScript++;
-							if(parLine) {
-								ps.println("0 Script <"+indexScript+"> bien executé");
-							}else {
+							//if(parLine) {
+								ps.println("Script <"+indexScript+"> bien executé");
+							/*}else {
 								ps.println("1 Script <"+indexScript+"> bien executé");
-							}
+							}*/
+							
+							
+							if(br.ready()) {
+								//System.out.println("+++br.ready()+++");
+								json = br.readLine();
+								msg = (Message)JSON.Json2Java(json, Message.class);
+								
+								if(msg.getType().equals("cmd")){
+									
+									if(msg.getMess().equals("Arreter")) {
+										compiled.clear();
+										break;
+									}
+								}
+							}//fin if ready()
 							
 						}
-						if(!parLine) {
+						/*if(!parLine) {
 							ps.println("0 ");
 							indexScript = 0;
-						}
+						}*/
 					
 					}else if(msg.getType().equals("cmd")){
 						
 						if(msg.getMess().equals("bye")) {
 							break;
-						}else if(msg.getMess().equals("debut par lignes")) {
+						}else if(msg.getMess().equals("debut")) {
 							indexScript = 0;
 							parLine = true;
-						}else if(msg.getMess().equals("fin par lignes")) {
+						}else if(msg.getMess().equals("fin")) {
 							indexScript = 0;
 							parLine = false;
 						}

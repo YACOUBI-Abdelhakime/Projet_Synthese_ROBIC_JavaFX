@@ -38,18 +38,17 @@ public class Control {
 	@FXML
 	private TextArea textArea2;
 	@FXML
-	private Button b1;
-	@FXML
-	private Button btnArreter,btnExecL, btnRetour1;
+	private Button b1, btnArreter, btnExecL, btnRetour1;
 
 
 	Socket socket;
-    private static BufferedReader br;
-    private static PrintStream ps;
-    String textTrace="";
+    public static BufferedReader br;
+    public static PrintStream ps;
+    public static String textTrace="";
     boolean envoyerAutre ;
     int indexLine = 0;
     String scripts[];
+    public static boolean serverClosed = true; 
     
 	
 	// Event Listener on Button[#btnDeconnecter].onAction
@@ -61,6 +60,7 @@ public class Control {
 			ps.close();
 	    	br.close();
 	    	body.setDisable(true);
+	    	serverClosed = true; 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -68,7 +68,8 @@ public class Control {
 	// Event Listener on Button[#btnArreter].onAction
 	@FXML
 	public void arreterExec(ActionEvent event) {
-		envoyerAutre = false;
+		System.out.println("+++++++fonction arreter() ");
+		ps.println(JSON.Java2Json(new Message("cmd","Arreter")));
 	}
 
 	// Event Listener on MenuItem.onAction
@@ -129,14 +130,37 @@ public class Control {
 	    	br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 	    	
 	    	body.setDisable(false);
+	    	//disableBtns(false);
+	    	
+	    	textArea2.setText("Trace d'exécution");
+	    	Responce threadRes = new Responce(textArea2);
+	    	threadRes.start();
+	    	serverClosed = false; 
 	    	
     	}  catch (Exception e) {
-			e.printStackTrace();
+    		//e.printStackTrace();
+    		textArea2.setText("Erreur de connexion essayer après !!!");
 		}
 	}
 	// Event Listener on Button[#b1].onAction
 	@FXML
 	public void b1_exec(ActionEvent event) {
+		if(serverClosed) {
+			disableBtns(true);
+			return ;
+		}
+		
+		
+		ps.println(JSON.Java2Json(new Message("cmd","fin")));
+		
+		if(indexLine-1 >= 0) {
+			scripts[indexLine-1] = scripts[indexLine-1].substring(3);
+			updateTextScripts(scripts);
+			indexLine = 0;
+			btnExecL.setText("Exécuter line 1");
+			btnExecL.setDisable(false);
+		}
+		
 		String cmd = textArea1.getText().trim();
     	textTrace="";
 		
@@ -146,43 +170,19 @@ public class Control {
     	
     	ps.println(json);
     	
-    	readFromServer();
-	    
-		
-		/*
-		
-		 String commande = textArea1.getText().trim();
-		String scripts[] = commande.split("\n");
-    	textTrace="";
-    	b1.setDisable(true);
-    	envoyerAutre = true;
-		
-		for(int i=0; i<scripts.length && envoyerAutre ;i++) {
-			String cmd = scripts[i];
-			Message msg = new Message("script",cmd);
-	    	System.out.println("Message = "+msg);
-	    	
-	    	String json = "";
-	
-	    	json = JSON.Java2Json(msg); 
-	    	
-	    	ps.println(json);
-	    	
-	    	readFromServer();
-	    	
-		}
-		ps.println(JSON.Java2Json(new Message("cmd","fin")));
-		b1.setDisable(false);
-		
-		 */
 	}
 	// Event Listener on Button[#btnArreter].onAction
 	@FXML
 	public void execLine(ActionEvent event) {
+		if(serverClosed) {
+			disableBtns(true);
+			return ;
+		}
+		
 		if(indexLine == 0) {
 			scripts = textArea1.getText().trim().split("\n");
 			textTrace="";
-			ps.println(JSON.Java2Json(new Message("cmd","debut par lignes")));
+			ps.println(JSON.Java2Json(new Message("cmd","debut")));
 		}
 		
 		if( indexLine < scripts.length ) {
@@ -192,7 +192,7 @@ public class Control {
 				scripts[indexLine-1] = scripts[indexLine-1].substring(3);
 			}
 			
-			updateTestScripts(scripts);
+			updateTextScripts(scripts);
 			
 			indexLine++;
 			Message msg = new Message("script",cmd);
@@ -201,11 +201,11 @@ public class Control {
 	    	
 	    	ps.println(json);
 	    	
-	    	readFromServer();
+	    	//readFromServer();
 	    	btnExecL.setText("Exécuter line "+(indexLine+1));
 	    	
 	    	if(scripts.length == indexLine ) {
-	    		ps.println(JSON.Java2Json(new Message("cmd","fin par lignes")));
+	    		ps.println(JSON.Java2Json(new Message("cmd","fin")));
 	    		btnExecL.setText("Scripts fini");
 				btnExecL.setDisable(true);
 	    	}
@@ -215,20 +215,30 @@ public class Control {
 	// Event Listener on Button[#btnArreter].onAction
 	@FXML
 	public void retourLine1(ActionEvent event) {
+
+		if(serverClosed) {
+			disableBtns(true);
+			return ;
+		}
+		
 		btnExecL.setText("Exécuter line 1");
-		scripts[indexLine-1] = scripts[indexLine-1].substring(3);
-		updateTestScripts(scripts);
-		System.out.println("INDEXLINE = "+(indexLine-1));
-		indexLine = 0;
-		scripts = textArea1.getText().trim().split("\n");
-		textTrace="";
-		textArea2.setText(textTrace);
+		if(indexLine-1 >= 0) {
+			scripts[indexLine-1] = scripts[indexLine-1].substring(3);
+			updateTextScripts(scripts);
+			//System.out.println("INDEXLINE = "+(indexLine-1));
+			ps.println(JSON.Java2Json(new Message("cmd","fin par lignes")));
+			indexLine = 0;
+			scripts = textArea1.getText().trim().split("\n");
+			textTrace="";
+			textArea2.setText(textTrace);
+		}
+		
 		btnExecL.setDisable(false);
 		
 		
 	}
 	
-	public void updateTestScripts(String scripts[]) {
+	public void updateTextScripts(String scripts[]) {
 		String tmpAllRes = "";
 		for(String line : scripts) {
 			tmpAllRes += line+"\n";			
@@ -246,19 +256,28 @@ public class Control {
 				tmpRes = br.readLine();//System.out.println("+>> "+tmpRes);
 		        state = Integer.valueOf(tmpRes.substring(0, tmpRes.indexOf(" ")));
 		        tmpRes = ">> "+tmpRes.substring(2).trim()+"\n";
-		        tmpAllRes += tmpRes.equals(">> \n") ? "" : tmpRes;
-		        System.out.println("RESS ==> "+tmpRes);
+		        tmpAllRes = tmpRes.equals(">> \n") ? "" : tmpRes;
+		       
+		        textTrace += tmpAllRes;
+				textArea2.setText(textTrace);
 		        
 			}while (state == 1); 
 
-			textTrace += tmpAllRes;
-			textArea2.setText(textTrace);
+			//textTrace += tmpAllRes;
+			//textArea2.setText(textTrace);
 			
 		} catch (IOException e) {
 			//server error
 			textTrace += ">> Serveur est deconncté !!";
 			textArea2.setText(textTrace);
 		}
+	}
+	
+	void disableBtns(boolean res) {
+		btnArreter.setDisable(res);
+		btnExecL.setDisable(res);
+		btnRetour1.setDisable(res);
+		b1.setDisable(res);
 	}
 	
 }
