@@ -12,7 +12,7 @@ public class Responce extends Thread{
 	}
 	
 	public void run() {
-		String tmpRes,tmpAllRes="";
+		String tmpRes;
 		while(true) {
 			try {
 				tmpRes = ">> "+Control.br.readLine().trim()+"\n";

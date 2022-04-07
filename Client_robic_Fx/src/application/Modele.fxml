@@ -25,7 +25,7 @@
                   <Menu text="Fichier">
                       <MenuItem onAction="#openFile" text="Ouvrir" />
                       <MenuItem onAction="#saveFile" text="Sauver" />
-                      <MenuItem text="Fermer" />
+                      <MenuItem onAction="#fermerFile" text="Fermer" />
                   </Menu>
               </MenuBar>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="20.0" stroke="TRANSPARENT" strokeType="INSIDE" width="200.0" />
@@ -42,9 +42,14 @@
                   <Rectangle fill="#ffffff00" height="24.0" layoutX="264.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="24.0" />
                   <Button fx:id="btnConnextion" mnemonicParsing="false" onAction="#connexion" text="Connexion" />
                   <Rectangle fill="#ffffff00" height="24.0" layoutX="467.0" layoutY="10.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="13.0" />
-                  <Button fx:id="btnDeconnecter" mnemonicParsing="false" onAction="#deconnecter" text="Déconnecter" />
+                  <Button fx:id="btnDeconnecter" disable="true" mnemonicParsing="false" onAction="#deconnecter" text="Déconnecter" />
                </children>
             </HBox>
+            <BorderPane prefHeight="25.0" prefWidth="521.0">
+               <center>
+                  <Label fx:id="fileName" text=" " visible="true" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
          </children>
       </VBox>
     </top>
